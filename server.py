@@ -52,7 +52,7 @@ def readSentenceFile():
         
 def getRandomSentence():
     global SENTENCES
-    return SENTENCES[random.randint(0,len(SENTENCES))]
+    return SENTENCES[random.randint(0, len(SENTENCES)-1)]
 
 def run(server_class=HTTPServer, handler_class=S, port=args.port):
     server_address = ('', port)
