@@ -10,8 +10,9 @@ Send a HEAD request::
 Send a POST request::
     curl -d "foo=bar&bin=baz" http://localhost
 """
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-import SocketServer
+#from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from  http.server import BaseHTTPRequestHandler, HTTPServer
+import socketserver
 import argparse
 import random
 
@@ -27,12 +28,12 @@ class S(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
-	self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
 
     def do_GET(self):
         self._set_headers()
-        self.wfile.write(getRandomSentence())
+        self.wfile.write(bytes(getRandomSentence(), 'utf-8'))
         #self.wfile.write("<html><body><h1>hi!</h1></body></html>")
 
     def do_HEAD(self):
@@ -45,10 +46,10 @@ class S(BaseHTTPRequestHandler):
 
 def readSentenceFile():
     with open('harvard_sentence.txt', 'r') as f:
-	content = f.readlines()
-	global SENTENCES  
-	SENTENCES = [x.strip() for x in content]  
-	print(len(SENTENCES))
+        content = f.readlines()
+        global SENTENCES  
+        SENTENCES = [x.strip() for x in content]  
+        print(len(SENTENCES))
         
 def getRandomSentence():
     global SENTENCES
@@ -57,7 +58,7 @@ def getRandomSentence():
 def run(server_class=HTTPServer, handler_class=S, port=args.port):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-    print 'Starting httpd...'
+    print('Starting httpd...')
     readSentenceFile()
     httpd.serve_forever()
 
